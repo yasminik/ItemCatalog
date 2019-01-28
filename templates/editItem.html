@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Catalog App</title>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+</head>
+<body>
+	<div class = "grid">
+
+		<header class="container" style="background: #ccffeb">
+			<div class="col-6">
+				<h1>Catalog App</h1>
+			</div>
+			<div class="col-6 right-align main-text-color">
+				{% if logged_in %}
+					<p></p>
+					<h3><a href="{{url_for('gdisconnect')}}">LOGOUT</a></h3>
+				{% else %}
+					<p></p>
+					<h3><a href="{{url_for('showLogin')}}">LOGIN</a></h3>
+				{% endif %}
+			</div>
+		</header>
+		<div class="container" style="background: #fce6ff">
+			<section class="flex-item center-align main-text-color">
+				<div class="col-3"></div>
+				<div class= "col-3">
+					<h2>Edit Item</h2>
+					<form action="{{url_for('editItem',category_link_name=category.link_name, item_link_name=item.link_name)}}" method="post">
+						<p>Title:</p>
+						<input type='text' name='item_name' value='{{item.name}}' style=" width:33%">
+						<input type="hidden" name="item_id" value={{item.id}}>
+
+						<p>Description:</p>
+						<input type='text' name='item_description' value='{{item.description}}' style="width:33%">
+
+						<p>Category:</p>
+						<select name="category_id" style="width:33%;">
+						{% for category_item in categories %}
+				   	 		<option value={{category_item.id}}
+				   	 		{% if category_item.id == category.id %}
+				   	 			selected
+				   	 		{% endif %}
+				   	 		>{{category_item.name}}</option>
+				    	{% endfor %}
+				  		</select>
+				  		<br><br>
+						<br><input type="submit" value="Edit" >
+					</form>
+				</div>
+				<div class="col-3"></div>
+				<br>
+				<a href="{{url_for('showItem',category_link_name=category.link_name, item_link_name=item.link_name)}}">Cancel</a>
+			</section>
+		</div>
+	</div>
+</body>
+</html>

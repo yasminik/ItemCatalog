@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Catalog App</title>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+</head>
+<body>
+
+	<div class = "grid">
+
+		<header class="container" style="background: #ccffeb">
+			<div class="col-6">
+				<h1>Catalog App</h1>
+			</div>
+			<div class="col-6 right-align main-text-color">
+				{% if logged_in %}
+					<p></p>
+					<h3><a href="{{url_for('gdisconnect')}}">LOGOUT</a></h3>
+				{% else %}
+					<p></p>
+					<h3><a href="{{url_for('showLogin')}}">LOGIN</a></h3>
+				{% endif %}
+			</div>
+		</header>
+
+		<div class="container">
+			<section class="flex-item center-align flash-text-color">
+				{% with messages = get_flashed_messages()%}
+						{% if messages %}
+							{% for message in messages %}
+								<strong> {{message}} </strong><br>
+							{% endfor %}
+						{% endif %}
+				{% endwith %}
+			</section>
+		</div>
+
+		<div class="container" style="background: #fce6ff">
+			<section class="flex-item center-align main-text-color">
+				<div class="col-3"></div>
+				<div class= "col-3">
+					<h1>Add Item to {{category.name}} Category</h1>
+					<br>
+					<form action="{{url_for('addItem',category_link_name=category.link_name)}}" method="post">
+						<p>Title:</p>
+						<input type='text' name='item_name' style=" width:33%">
+						<input type="hidden" name="category_id" value={{category.id}}>
+
+						<p>Description:</p>
+						<input type='text' name='item_description' style=" width:33%">
+						<br><br><br>
+						<input type="submit" value="Add">
+					</form>
+					<br>
+					<a href="{{url_for('showItems',category_link_name=category.link_name)}}">Cancel</a>
+				</div>
+				<div class="col-3"></div>
+			</section>
+		</div>
+	</div>
+</body>
+</html>

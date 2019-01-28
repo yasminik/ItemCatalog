@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Catalog App</title>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+</head>
+<body>
+		<div class = "grid">
+
+			<header class="container" style="background: #ccffeb">
+			<div class="col-6">
+				<h1>Catalog App</h1>
+			</div>
+			<div class="col-6 right-align main-text-color">
+				{% if logged_in %}
+					<p></p>
+					<h3><a href="{{url_for('gdisconnect')}}">LOGOUT</a></h3>
+				{% else %}
+					<p></p>
+					<h3><a href="{{url_for('showLogin')}}">LOGIN</a></h3>
+				{% endif %}
+			</div>
+		</header>
+
+		<div class="container" style="background: #fce6ff">
+			<section class="flex-item center-align main-text-color">
+				<h2>{{item.name}}</h2>
+				<br>
+				<div>
+					<p>Do you want to delete this item from {{category.name}} category?</p>
+					<br>
+					<div>
+						<form action="{{ url_for('deleteItem', category_link_name=category.link_name, item_link_name=item.link_name)}}" method = 'post'>
+							<input type='submit', value = 'Delete'>
+							<input type="hidden" name="item_id" value={{item.id}}>
+							<input type="hidden" name="category_link_name" value={{category.link_name}}>
+						</form>
+						<br>
+						<a href = "{{ url_for('showItem', category_link_name=category.link_name, item_link_name=item.link_name)}}"> Cancel </a>
+					</div>
+					<br>
+				</div>
+			</section>
+		</div>
+
+		</div>
+</body>
+
+</html>

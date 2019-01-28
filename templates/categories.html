@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Catalog App</title>
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='main.css') }}">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Karla" rel="stylesheet">
+</head>
+<body>
+	<div class="grid">
+		<header class="container" style="background: #D2FFD9">
+			<div class="col-6">
+				<h1>Catalog App</h1>
+			</div>
+			<div class="col-6 right-align main-text-color">
+				{% if logged_in %}
+					<p></p>
+					<h3>Hi {{login_session['username']}}!</h3>
+					<h3><a href="{{url_for('gdisconnect')}}">LOGOUT</a></h3>
+				{% else %}
+					<p></p>
+					<h3><a href="{{url_for('showLogin')}}">LOGIN</a></h3>
+				{% endif %}
+			</div>
+
+		</header>
+
+		<div class="container">
+			<section class="flex-item center-align flash-text-color">
+				{% with messages = get_flashed_messages()%}
+						{% if messages %}
+							{% for message in messages %}
+								<strong class="flash-text-color"> {{message}} </strong><br>
+							{% endfor %}
+						{% endif %}
+				{% endwith %}
+			</section>
+		</div>
+		<div class="container" style="background: #fce6ff">
+			<section class="flex-item center-align main-text-color">
+				<h2>Categories</h2>
+					<br><br>
+					{% for category in categories %}
+						<div>
+							<p><a href="{{url_for('showItems', category_link_name = category.link_name)}}">{{category.name}}</a></p>
+							<br>
+						</div>
+					{% endfor %}
+			</section>
+			<section class="flex-item center-align main-text-color">
+				<h2>Latest Items</h2>
+					<br><br>
+					{% for item in items %}
+						<div>
+							<p>
+								<a href="{{url_for('showItem', category_link_name = (item.category).link_name, item_link_name = item.link_name)}}">{{item.name}} </a>({{(item.category).name}})
+							</p>
+							<br>
+						</div>
+					{% endfor %}
+			</section>
+		</div>
+	</div>
+</body>
+</html>

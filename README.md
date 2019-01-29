@@ -39,7 +39,7 @@ Besides Udacity Knowledge and StudentHub platforms, the websites below are used 
 To run the application in the browser, open internet browser and type the application URL stated aboove to the address bar.
 
 ## Connecting to Server
-In order to connect to server in the terminal get to the location where the private key `linuxProject` is and then type `ssh grader@35.182.241.34 -i linuxProject -p 2200` and hot enter. Now you connect to the server, you can look at the configuration.
+In order to connect to server in the terminal get to the location where the private_key file is and then type `ssh grader@35.182.241.34 -i private_key -p 2200` and hot enter. Now you connect to the server, you can look at the configuration.
 
 
 ## Some Usage and Assumptions

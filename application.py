@@ -1,4 +1,5 @@
 # Catalog App Project by Yasemin Arslan
+import sys
 import datetime
 import random
 import string
@@ -17,7 +18,8 @@ from flask import (
     session as login_session
 )
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy import MetaData
 from sqlalchemy.orm.exc import NoResultFound
 from database_setup import Base, Category, User, Item
 from oauth2client.client import flow_from_clientsecrets
@@ -25,16 +27,30 @@ from oauth2client.client import FlowExchangeError
 
 app = Flask(__name__)
 
-CLIENT_ID = json.loads(open('client_secrets.json', 'r').
-                       read())['web']['client_id']
+#CLIENT_ID = json.loads(open('client_secrets.json', 'r').
+#                       read())['web']['client_id']
+with app.open_resource('client_secrets.json') as f:
+    CLIENT_ID = json.load(f)['web']['client_id']
+
 APPLICATION_NAME = "Catalog App"
 
-engine = create_engine('sqlite:///catalog_app.db')
+#engine = create_engine('sqlite:///catalog_app.db')
+#m = MetaData()
+#m.reflect(engine)
+#print >> sys.stderr, m.tables
 
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+#Base.metadata.bind = engine
+#DBSession = scoped_session(sessionmaker(bind=engine))
+#session = DBSession()
 
+session = scoped_session(sessionmaker())
+metadata = MetaData('sqlite:////var/www/ItemCatalog/catalog_app.db')
+session.configure(bind=metadata.bind)
+
+#print >> sys.stderr, "111"
+#print >> sys.stderr, metadata.bind
+#print >> sys.stderr, "222"
+#print >> sys.stderr, session
 
 # creates info for login and opens login page
 @app.route('/login')
@@ -58,7 +74,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/ItemCatalog/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -210,10 +226,13 @@ def showCategories():
     if 'username' in login_session:
         logged_in = True
     categories = session.query(Category).all()
+    #print >> sys.stderr, "*******************************"
+    #print >> sys.stderr, categories
     items = session.query(Item).order_by(Item.id.desc())[0:5]
     return render_template('categories.html',
                            categories=categories,
                            items=items,
+                           logged_in=logged_in,
                            login_session=login_session)
 
 
@@ -402,6 +421,11 @@ def sendJSON():
 
 
 if __name__ == '__main__':
+    print >> sys.stderr, "buradayim"
     app.secret_key = 'super_secret_key'
+    app.config['SESSION_TYPE'] = 'filesystem'
     app.debug = True
-    app.run(host='0.0.0.0', port=8000)
+    #app.run(host='0.0.0.0', port=8000)
+    app.run(threaded=False)
+
+app.secret_key = 'super_secret_key'
